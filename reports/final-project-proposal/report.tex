@@ -1,0 +1,67 @@
+\documentclass[10pt,a4paper]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MODIFY:
+\newcommand{\projectname}{Comparing a Neural Network and Knowledge-Based Approach for Crowd Dynamics} % - PROJECT NAME
+\newcommand{\duedate}{2024-02-08} % - DEADLINE DATE
+\newcommand{\authorA}{Alejandro Hernandez Artiles (03785345)}
+\newcommand{\authorB}{Pavel Sindelar (03785154)}
+\newcommand{\authorC}{Haoxiang Yang (03767758)}
+\newcommand{\authorD}{Jianfeng Yue (03765255)}
+\newcommand{\authorE}{Leonhard Chen (03711258)}
+\newcommand{\groupNumber}{C} % - YOUR GROUP NUMBER
+\newcommand{\exerciseNumber}{6} % - THE NUMBER OF THE EXERCISE
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% IMPORTS:
+\input{imports.tex}
+\usepackage{graphicx} 
+\usepackage{subfigure}
+\usepackage{float}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\frontpage
+
+\begin{task}{1, Introduction of Approach and Dataset (15\%)}
+\begin{itemize}
+    \item Introduce a neural network and knowledge-based approach.
+    \item Define the datasets from paper \cite{tordeux2020prediction} (\url{https://zenodo.org/records/1054017}).
+\end{itemize}
+    
+\end{task}
+
+\begin{task}{2, Implementation of the neural network (40\%)}
+\begin{itemize}
+    \item Implement neural network from paper (and potentially more complex model).
+    \item Tests on corridor and bottleneck experiment.
+\end{itemize}
+
+\end{task}
+
+\begin{task}{3, Implementation of knowledge-based model (20\%)}
+\begin{itemize}
+    \item Implementation of a knowledge-based model (Weidmann Fundamental Diagram).
+    \item Tests on corridor and bottleneck experiment.
+\end{itemize}
+\end{task}
+
+\begin{task}{4, Comparison of the approaches (20\%)}
+\begin{itemize}
+    \item Compare the test results.
+    \item Discussion of the approaches and architectures (benefits, drawbacks, challenges).
+\end{itemize}
+
+\end{task}
+
+\begin{task}{5, Discussion of future work and other approaches (5\%)}
+\begin{itemize}
+    \item Introduce approach separate from paper \cite{korbmacher2022review}.
+    \item Discuss hybrid approaches.
+\end{itemize}
+
+\end{task}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%  REFERENCES
+\bibliographystyle{plain}
+\bibliography{Literature}
+\end{document}

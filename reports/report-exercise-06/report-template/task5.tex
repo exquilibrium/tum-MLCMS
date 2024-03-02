@@ -1,0 +1,22 @@
+\begin{task}{5, Discussion of future work and other approaches (5\%)}
+The paper \cite{korbmacher2022review} talks in the discussion and future work session about new trends in the approximation of pedestrian dynamics. 
+
+\paragraph{Hybrid approaches} They mention the hybrid approaches that mix neural networks and knowledge-based approaches as a very valuable alternative, as many drawbacks of DL algorithms are strengths in the knowledge-based approach, like the interpretability of its parameters. They describe two ways of combining the two concepts:
+\begin{itemize}
+    \item \textbf{Use Knowledge-based models to improve DL algorithms} Some interesting examples of these are:
+    \begin{itemize}
+    \item \textbf{Data Generation:} Knowledge-based models generate synthetic data sets to augment training data for the DL algorithm, particularly useful when real-world data is limited or lacks diversity. For instance, simulations based on KB models can enhance training data for scenarios not well-represented in existing data sets \cite{von2020combining}.
+    \item \textbf{Knowledge-Guided Design of Architecture: }Knowledge-based is integrated into the architecture design of DL models to capture domain-specific dependencies among variables. This involves embedding knowledge directly into the network structure \cite{antonucci2020generating}.
+    \item \textbf{Knowledge-Guided Loss Function:}  Knowledge is incorporated into the loss function of DL algorithms to ensure outputs adhere to physical laws, minimizing unrealistic predictions \cite{willard2022integrating}. 
+    \end{itemize}
+    \item \textbf{Use DL algorithms to improve the prediction of knowledge-based models:} This can be done for example by training to correct errors made by KB models by predicting model residuals, as in \cite{willard2022integrating} too. Also, DL algorithms can be used to adjust the parameters of KB models, as they did to refine the social force model parameters in \cite{gottlich2020artificial}. 
+\end{itemize}
+
+As we can see the authors conclude that neural network and knowledge-based approaches can be used as complementary methods to strengthen each other's weaknesses.
+
+As we saw in Task 2, we tried an hybrid approach as it seemed like an interesting way to try to improve our results with the neural net. Following the different types of hybrid models suggested by the paper, ours is closer to the former, and within it, closer to the \textit{knowledge-guided design of architecture} as we are changing the last layer to resemble the Weidmann model. However, the hybrid approach we designed was not that better compared to the rest, being a little bit better than other models we tried. This could happen also because our hybrid model is very simple and rudimentary, nevertheless we think that, in general, hybrid models would be refined in the future leading to better results, as they have "the better of both worlds".
+
+On the other hand, in \cite{korbmacher2022review} they also discussed other directions for the future. For example, Reinforcement learning algorithms are being used, as they sometimes resemble how people learn and move. Reinforcement learning is a common method also to made agents learn about its environment by setting a reward for reaching a goal while avoiding collisions. However, RL methods need a reward function, that sometimes is not easy to model, and a priori goal or destination. There are some works where they combine RL and DL approaches to try to mitigate these drawbacks \cite{everett2021collision}.
+
+Finally, the propose some questions regarding the possibility of a successful use of DL algorithms in large-scale crowd simulations. In our opinion, as we have observed in our report and experience with the previous tasks, we think that one of the main problems of DL is that it needs a lot of data. Moreover, we have seen that it is difficult for them to learn more insightful patterns of the pedestrian dynamics. Specifically, when trained on a specific scenario, they tend to learn the dynamics unique to that scenario rather than general patterns of movement. Consequently, when tested in a new scenario, performance tends to degrade. This limitation in generalization in new environments is common to neural networks across various domains, but it holds particular significance in crowd simulation due to the multitude of potential scenarios. We hope that in the future, advancements in deep learning will address this limitation, making it even more beneficial for crowd simulation tasks.
+\end{task}

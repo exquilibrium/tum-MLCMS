@@ -1,0 +1,240 @@
+\documentclass[10pt,a4paper]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MODIFY:
+\usepackage{graphicx} 
+\usepackage{subfigure}
+\usepackage{float}
+\newcommand{\authorA}{Alejandro Hernandez Artiles (03785345)}
+\newcommand{\authorB}{Pavel Sindelar (03785154)}
+\newcommand{\authorC}{Haoxiang Yang (03767758)}
+\newcommand{\authorD}{Jianfeng Yue (03765255)}
+\newcommand{\authorE}{Leonhard Chen (03711258)}
+\newcommand{\teamlead}{~\textbf{(Project Lead)}}
+\newcommand{\groupNumber}{C} % - YOUR GROUP NUMBER
+\newcommand{\exerciseNumber}{1} % - THE NUMBER OF THE EXERCISE
+\newcommand{\sourceCodeLink}{https://github.com/alejandrohdez00/Exercises-MLCMS-Group-C/tree/main/Exercise-1}
+
+\newcommand{\workPerAuthor}{
+\authorA\teamlead & Task 1&20\%\\
+      &Task 2&20\%\\
+      &Task 3&20\%\\
+      &Task 4&20\%\\
+      &Task 5&20\%\\
+      \hline
+\authorB & Task 1&20\%\\
+      &Task 2&20\%\\
+      &Task 3&20\%\\
+      &Task 4&20\%\\
+      &Task 5&20\%\\
+      \hline
+\authorC & Task 1&20\%\\
+      &Task 2&20\%\\
+      &Task 3&20\%\\
+      &Task 4&20\%\\
+      &Task 5&20\%\\
+      \hline
+\authorD & Task 1&20\%\\
+      &Task 2&20\%\\
+      &Task 3&20\%\\
+      &Task 4&20\%\\
+      &Task 5&20\%\\
+      \hline
+\authorE & Task 1&20\%\\
+      &Task 2&20\%\\
+      &Task 3&20\%\\
+      &Task 4&20\%\\
+      &Task 5&20\%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{./imports.tex}
+
+\begin{document}
+
+\frontpage
+
+\paragraph{Introduction}
+ In this project we introduce ourselves to the field of human crowd modelling using a simple cellular automaton, a useful approach for modelling complex and dynamical systems. The automaton works by having cells follow certain rules to determine their next state. Despite the simplicity of these rules, their iteration in different cells produces a complex and interesting behaviour.
+
+\paragraph{}Each cell of our cellular automaton can be in four different states: "Empty", "Pedestrian", "Obstacle" and "Target". In the system, the pedestrians will try to reach a target cell, avoiding the obstacles by means of update scheme, which basically tries to reduce the Euclidean distance of each pedestrian to one of the target cells by updating the position of the pedestrian to the nearest neighbouring cell to a target. This update scheme could be changed during the project.
+
+\begin{task}{1, Setting up the modeling environment}
+In this first task we want to setup the basic visualization for running the simulations. The initial project provides a simple GUI for the simulation of the cellular automaton. Each cell draws pedestrians, targets, obstacles as a colored rectangle and by clicking the step button a single time-step is simulated. We use the following colors for each object:
+\begin{itemize}
+    \item White for empty cells
+    \item Blue for target cells
+    \item Magenta for obstacle cells
+    \item Red for cells with pedestrians
+    \item Light Grey for cells traversed by a pedestrian (New)
+\end{itemize}
+While the example project does provide a rough framework, we added several major changes to allow flexibility for adding new functionality and ease of use for the following tasks. We will first explain the implementation decisions and then at the end of this report section we will provide instructions on how to use the program. To improve the initial setup the main goals were:
+\begin{enumerate}
+    \item to define a file format for simulation scenarios,
+    \item to implement loading scenarios from external files and
+    \item to implement more controls for performing simulations.
+\end{enumerate}
+
+\paragraph{1. Define a file format for simulation scenarios} 
+After observing how a simple scenario was hard-coded inside the \texttt{start\_gui(...)} function in \texttt{gui.py}, we first defined the format of the scenario files. All simulation scenarios are stored in \texttt{.json}-files and their format is as follows:
+
+\begin{verbatim}
+{
+    "iterations": n,
+    "cell_size": [width, height],
+    "targets": [
+        [tar_x, tar_y]
+    ],
+    "obstacles": [
+        [obs_x, obs_y]
+    ],
+    "pedestrians": [
+        { "position": [pos_x, pos_y], "speed": v }
+    ]
+}
+\end{verbatim}
+
+\newpage
+\begin{itemize}
+    \item \texttt{"iterations"} Defines the integer $n$ as the number of simulation time-steps that are performed automatically after starting the simulation
+    \item \texttt{"cell\_size"} Defines the integers \texttt{width} and \texttt{height} for the cells of the cellular automaton. Note that GUI will display all ratios between width and height in a square canvas, hence an uneven ratio will lead to a stretched display of cells.
+    \item \texttt{"targets"} Defines a list of target coordinates stored as an integer list.
+    \item \texttt{"obstacles"} Defines a list of obstacle coordinates stored as an integer list.
+    \item \texttt{"pedestrians"} Defines a list of pedestrians, each containing integer starting positions and a float velocity. Note that multiple pedestrians can be placed in the same cell.
+\end{itemize}
+
+\paragraph{2. Implement loading scenarios from external files}
+To load these scenario files, we implemented both loading from CLI and GUI. Loading from CLI requires us to modify \texttt{main.py}, so we can parse one additional optional arguments when starting the program. The arguments allow us to load a specific scenario file, choose a specific algorithm and whether we want to pedestrians to avoid each other. By default the scenario \texttt{scenario\_task1.json} is loaded with the fast marching algorithm and pedestrian avoidance enabled. All of these arguments are passed to the GUI class.
+
+Inside the GUI object the simulation of the scenario is setup in 2 steps:
+\begin{enumerate}
+    \item The \texttt{start\_gui(...)} function initially loads the contents of the scenario file inside the class attribute \texttt{config=None}, which is later on needed for resetting and loading a scenario. (Similarly many other variables created in \texttt{start\_gui(...)} are added as class attributes to shorten the signature of functions inside this class.)
+    \item Then \texttt{self.load\_scenario\_from\_config(...)} is called to actually setup the simulation environment with the given parameters from the scenario file.
+\end{enumerate}
+To load from the GUI we perform these same 2 steps inside the \texttt{load\_scenario(...)} function.
+
+\paragraph{3. Implement more controls for performing simulations}
+For debugging purposes the simulation was changed to run automatically after pressing the start button. Additionally we added a reset button to reload the starting configuration of the scenario file. On the top right of the program the remaining iterations are displayed. Once the simulation has ended the program will display "Simulation finished". Additionally on the bottom left the change background button visualizes the the distance values with a blue hue.
+
+\paragraph{Instructions} To define a scenario file follow the file format defined in the previous section. The program can be started from CLI and optionally a scenario file, algorithm choice and pedestrian avoidance flag can be passed to initially load it into the simulation. Possible algorithm arguments are "F" for fast marching (default), "D" for Dijkstra and "S" for the default update rule. To disable pedestrian avoidance adding the flag \textit{--ignorePedestrians} suffices. The default starting command for task 1 is as follows:
+
+\begin{verbatim}
+python main.py --scenario scenario_task1.json --algorithm S --ignorePedestrians
+\end{verbatim}
+
+After the simulation has loaded there are 5 buttons available.
+\begin{itemize}
+    \item \texttt{Load simulation}: Opens a dialogue window. Selecting a .json file loads a scenario into the program. 
+    \item \texttt{Start simulation}: Starts the simulation and stops once the pedestrians arrive at their target or the iteration counter on the top right reaches 0.
+    \item \texttt{Step simulation}: Simulates a single time-step of the pedestrians and pauses the current running simulation.
+    \item \texttt{Reset simulation}: Resets the simulation to the initial state of the scenario.
+    \item \texttt{Change background}: Changes the background to display the distance to targets. It takes into account the distances computed by the algorithm in use.
+\end{itemize}
+
+The following figures provide an example of using the simulation controls with \texttt{scenario\_task1.json}, which is the scenario provided in the example project. Adding obstacles is possible, but will be demonstrated in task 2. Figure \ref{task1}a shows the dialogue window when loading a new simulation. Figure \ref{task1}b shows an example scenario with 3 pedestrians, 3 targets and objects. In figure \ref{task1}c we see the result while running the simulation. In figure \ref{task1}d the pedestrians have reached their targets by either manually performing simulation steps or running the simulation automatically. In Figure \ref{task1}e the visualization of distances to the targets has been enabled.
+
+\begin{figure}[H] 
+\centering
+\subfigure[Load simulation]{
+\includegraphics[width=0.4\textwidth]{report-template/image/Task1_1.png}}
+\subfigure[Start simulation]{
+\includegraphics[width=0.4\textwidth]{report-template/image/Task1_2.png}}
+\subfigure[Simulation Finished]{
+\includegraphics[width=0.4\textwidth]{report-template/image/Task1_3.png}}
+\subfigure[Target reached]{
+\includegraphics[width=0.4\textwidth]{report-template/image/Task1_4.png}}
+\subfigure[Visualizing target distances]{
+\includegraphics[width=0.4\textwidth]{report-template/image/Task1_5.png}}
+\caption{Use of the GUI}
+\label{task1}
+\end{figure}
+\end{task}
+
+\newpage
+\begin{task}{2, First step of a single pedestrian}
+In the  second task we want to test the basic functionalities of the simulations in a simple scenario. Here we created a new scenario file that satisfies the following  specifications:
+\begin{itemize}
+    \item Iterations: 25
+    \item Cell size: 50x50
+    \item Target position: (25, 25)
+    \item Pedestrian position: (5, 25)
+\end{itemize}
+The scenario can be opened via the load simulation button and selecting "scenario\_task2.json" in the dialogue window. To run this test from CLI run the following command:
+\begin{verbatim}
+python main.py --scenario scenario_task2.json --algorithm S
+\end{verbatim}
+Afterwards, the simulation finishes with the pedestrian reaching the target and waiting there.
+\begin{figure}[H] 
+\centering
+\subfigure[Initial state]{
+\includegraphics[width=0.4\textwidth]{report-template/image/Task2_1.png}}
+\subfigure[Final state]{
+\includegraphics[width=0.4\textwidth]{report-template/image/Task2_2.png}}
+\caption{Simulation of task 2}
+\end{figure}
+
+In the Figure \ref{pedestrian_block} we make certain cells inaccessible by adding a vertical line of obstacles to block the pedestrian. Here we still use the standard movement algorithm with Euclidean distance. We treat all 8 connected neighboring cells as the "next step" to calculate the optimal step. As the pedestrian reached the cell neighbouring to the obstacles, the pedestrian get stuck at that point. Use the following command to reproduce this example.
+
+\begin{verbatim}
+python main.py --scenario scenario_task2a.json --algorithm S
+\end{verbatim}
+
+\begin{figure}[H] 
+\centering
+\includegraphics[width=0.4\textwidth]{report-template/image/Task1_7.png}
+\caption{Pedestrian blocked by obstacle}
+\label{pedestrian_block}
+\end{figure}
+\end{task}
+
+\begin{task}{3, Interaction of pedestrians}
+The third task serves to manage the speeds of pedestrians. To do this, we created a scenario where 5 pedestrians are at approximately the same distance from a target, forming a circle. In particular, as we want to check the difference in speed between horizontal, vertical and diagonal movements. In the scenario there are four pedestrians forming a cross with respect to the centre, providing the horizontal and vertical movements, and we have placed a pedestrian at the same distance on a diagonal.
+\begin{figure}[H] 
+\centering
+\subfigure[Initial state]{
+\includegraphics[width=0.45\textwidth]{report-template/image/Task_3_1.png}}
+\subfigure[Final state]{
+\includegraphics[width=0.45\textwidth]{report-template/image/Task_3_2.png}}
+\caption{Initial simulation of task 3}
+\label{init_sim_3}
+\end{figure}
+
+As we can observe in Figure \ref{init_sim_3}b, the diagonal path to the target is faster than the horizontal and vertical ones. That is because our system is using a discrete grid, but the distance from a pedestrian to the target is computed using the Euclidean distance. Therefore, if a pedestrian moves horizontally or vertically, it is advancing a distance of 1, but if it moves diagonally it is advancing a distance of $\sqrt{2} = 1.41...$, thus travelling more distance in the same time. 
+
+We tried to solve the problem by putting a penalty on the diagonal movement. We calculated the Euclidean distance travelled by a pedestrian and when a series of time steps were fulfilled we calculated its velocity as the radius of the distance and the number of those time steps. If the pedestrian's speed was greater than the desired speed, entered as a parameter in the scenario's .json file, it was forced to stop at the next time step. As we can observe in Figure \ref{sim_task3}a, this method achieved that all pedestrians reached the target at the same time step, reducing the difference in their speeds. However, it is not very realistic for a crowd to be constrained in diagonal motion only, so we generalised this concept and made the motion of pedestrians stochastic, still trying to penalise more the diagonal movements. We achieve this using formula (1):
+ \begin{equation}
+\frac{\text{desired\_speed}}{\text{dist}(\text{position}, \text{min\_cost\_pos})} < \epsilon
+\end{equation}
+where \(\epsilon\) is a random number \(\epsilon \in [0,1]\). This formula is checked inside the \texttt{update\_step} function in the Pedestrian class, and if the condition is fulfilled, the pedestrian does not advance a position in that time step. Basically, the pedestrian's speed becomes a probability distribution, since we are comparing the ratio between their desired speed and the Euclidean distance to a random number. 
+
+If the Euclidean distance from the pedestrian's current position and its next position is greater (it is diagonal) it is more likely to stop than making a horizontal or vertical movement. On the other hand, as the divisor is the desired velocity, if this is very large, it will be less likely to stop as well. Therefore, in this simple way a velocity distribution can be modelled for the pedestrians with the diagonal motion constraints.
+
+In Figure \ref{sim_task3}b we can observe a non-uniform speed distribution allowing horizontal and vertical paths to be equally fast as diagonal ones. In Figure \ref{sim_task3}c is shown the comparison between the desired speed and the actual speed of each of the pedestrians. The stochastic distribution of speeds can be noticed. For example the 3 fastest pedestrians in Figure \ref{sim_task3}b have a higher current speed and are at the top of the graph, and the last two pedestrians have a current speed of approximately 0.1 less.
+\begin{figure}[H] 
+\centering
+\subfigure[First implementation]{
+\includegraphics[width=0.4\textwidth]{report-template/image/Task_3_3.png}}
+\subfigure[Stochastic implementation]{
+\includegraphics[width=0.4\textwidth]{report-template/image/Task_3_4.png}}
+\subfigure[Actual speed vs desired speed distribution]{
+\includegraphics[width=0.4\textwidth]{report-template/image/plot_task3.png}}
+\caption{Implementations of task 3}
+\label{sim_task3}
+\end{figure}
+
+Pedestrian avoidance was not needed for this exercise, however it is still a feature of pedestrian interaction. Pedestrian avoidance is explained in the next section.
+Use the following command to run the experiment:
+\begin{verbatim}
+python main.py --scenario scenario_task3.json --algorithm S 
+\end{verbatim}
+\end{task}
+
+\input{report-template/task4}
+\newpage
+\input{report-template/task5}
+
+\bibliographystyle{plain}
+\bibliography{Literature}
+
+\end{document}

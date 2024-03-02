@@ -1,0 +1,82 @@
+\begin{task}{4, Comparison of the approaches (20\%)}
+After implementing and testing the models we can now draw comparisons between both models. The main metric used to compare the neural network approach with the knowledge-based approach is the mean-squared error (MSE). Similar to the paper \cite{tordeux2020prediction} we define this error as follows:
+
+\begin{align}
+    MSE(v,\hat{v}) =\frac{1}{n}\sum_{i=1}^n (v_i - \hat{v}_i)^2\label{mse}
+\end{align}
+
+Here in \ref{mse} $v$ is the velocity from the dataset (after preprocessing) and $\hat{v}$ is the predicted velocity using either approach. Apart from reproducing the results from \cite{tordeux2020prediction} our goal is to see how well a neural network approach performs in comparison to a knowledge-based model.
+
+\paragraph{Comparing results of both approaches}
+First we have to note that for the knowledge-based approach the MSE was calculated separately for the bottleneck and corridor scenario. Since this approach fits slightly different parameters for each scenario, we will therefore not test a function fit for bottleneck scenario on data of the corridor scenario.
+
+In the Table \ref{Tab:mse-weid} we calculated the MSE for the methods on obtaining the parameters of the Weidmann model from the previous section. Most notably the MSE hovers around $0.117$ for the bottleneck scenario and $0.103$ for the corridor scenario. Taking this into context of the results for obtaining the parameters, we see that quite different parameters are possible to achieve similarly good results. Overall we do see that method 3.1 performs the best, since in this curve fitting approach both parameter $T$ and $l$ could be tweaked.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ |l|c|c|c| }
+\hline
+Scenario & Bottleneck & Corridor\\
+%\hline
+%$W(...)$ from paper & $1.64$ & $1.50$\\
+\hline
+$W(...)$ from (2) & $0.11723$ & $0.10359$\\
+\hline
+$W(...)$ from (3.1) & $0.11657$ & $0.10294$\\
+\hline
+$W(...)$ from (3.2) & $0.11669$ & $0.10342$\\
+\hline
+\end{tabular}
+\caption{$MSE$ for Weidmann model}
+\label{Tab:mse-weid}
+\end{table}
+
+In Table \ref{Tab:mse-nn} we can observe the results for the experiment of Figure \ref{fig:secoroffshelf}, one of the best ones for the neural network Task 2.2. Also we can see the result for the largest network in Task 2.1.  For Task 2.2, we can see how the best network in the Bottleneck is the simplest one, the one with 3 neurons. However, the network with (10,4) is the one that achieves the best average result in both scenarios.
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ |l|c|c|c| }
+\hline
+Scenario & Bottleneck & Corridor\\
+\hline
+(3) second order optimizer (Task 2.2) & $0.076$ & $0.099$\\
+\hline
+(10,4) second order optimizer (Task 2.2) & $0.075$ & $0.054$\\
+\hline
+(256, 128, 65, 32) (Task 2.1)  & $0.007$ & $0.007$\\
+\hline
+\end{tabular}
+\caption{$MSE$ for a selection of neural networks in Task 2.1 and 2.2}
+\label{Tab:mse-nn}
+\end{table}
+
+In the comparison we can see that the neural network models perform better (far better in the case of Task 2.1 approach) than the Weidmann model, the knowledge-based model we used. As in \cite{tordeux2020prediction}, the neural network approach has less MSE than the Weidmann model for almost every experiment. This supports the authors' argument in the paper. While our results may not precisely match theirs, possibly due to variations in parameters or preprocessing techniques, the fundamental relationship between the performance of the knowledge-based model and the neural networks remains consistent.
+
+Also, it is evident that the preprocessing in Task 2.1 is very useful as it allow us to use larger networks without overfitting, achieving results very close to the referenced paper. In contrast, it seems that the problem for this work is more a data problem than an architecture problem, as we can observe comparing results from Task 2.1 and Task 2.2.
+
+It is interesting to note that despite employing different pretraining and parameter configurations, the optimal model from their \(NN_3\) was also the one with 3 neurons in the hidden layer, mirroring our own findings for Task 2.2. This consistency is remarkable, especially considering that this simple network architecture yielded the best results for both studies. This observation was surprising in their paper, and it becomes even more surprising for us since we are not using identical configurations. Therefore, it is plausible to conclude that the success of this network lies in its balance and the low data: it is sufficiently complex to perform well, yet not overly complex to overfit the limited amount of data available.
+
+\paragraph{Benefits and Drawbacks} After experimenting on both approaches we support the benefits and drawbacks suggested in paper \cite{korbmacher2022review}.
+
+For the DL approach, we do not need to find by ourselves a set of rules or equations that is congruent with the dynamics of the pedestrians in all scenarios. Relying on the big amount of data we have about crowd dynamics, we do not need to have a profound domain knowledge to actually getting very good predictions. Also, theoretically, the neural networks are able to learn really complex patterns if we have enough amount of data. On the other hand, the dynamics that the neural network is going to learn are not explicable and their parameters are non-interpretable. Depending on the context, this can be a serious drawback. For example, if you are using a model to predict crowd dynamics for a security protocol in a building, it is safer and ethical for the model to be explainable. In case of an accident caused by a wrong prediction, it is important to be able to examine the model to understand why it made the mistake.
+
+The knowledge-based model faces it biggest challenge in finding the methodology to describe the model and obtain the parameters of the model. Additionally data preparation is time-consuming, though this applies to any problem dealing with large amounts of data. Overall the main benefit of the knowledge-based approach lies in its efficiency and speed to obtain model parameters that achieve very low errors. While the errors could be lower, this approach tends to use a rather simple function, which also makes the model very easy to interpret. Overall knowledge-based models are best used when the problem is describable as a function, since this function can then be easily fitted to the data, because only few parameters need to be tuned. But on the flipside, their accuracy are not near-optimal, as more complex non-linear functions should always be able to achieve better results.
+
+
+\paragraph{Challenges of the KB approach} Overall the implementation of the Weidmann model is extremely simple and performing tests to measure its MSE can be done quite easily. The main issue of fitting the Weidmann model to the original data lies in the following 2 points.
+
+\begin{enumerate}
+    \item Preprocessing the data
+    \item Obtaining the parameters of the Weidmann model
+\end{enumerate}
+
+The first issue is preprocessing the data. Apart from us not knowing the exact method that was used to preprocess the data that was used for \cite{tordeux2020prediction}, preprocessing itself has many steps and things to consider. Preparing the data depends first off on how the data is going to be used. For the Weidmann model the idea is to fit the Weidmann model on a diverse set of scenarios. So all data from each scenario are used to obtain parameters separate for each scenario, those being Bottleneck and Corridor scenario. Some considerations that had to be made additionally are deleting $z$-positions as they are not used. Also positions that outside the measurement area had to be removed, though here an arguemnt can be made about how these positions could be used to calculate the speed of each pedestrian.
+
+After basic cleaning additional data needs to be generated, which is later needed for fitting the Weidmann model onto the data. The Weidmann model mainly uses the mean spacing as input to calculate the speed of a pedestrian. Therefore mean spacing and speed needs to be calculated for each pedestrian at each frame. Again the exact methodology of the authors from \cite{tordeux2020prediction} is unknown and we can only speculate how border cases are handled. One example being if there are less than 10 neighbours, whether we should calculate a mean spacing with the remaining neighbours or immediately set it to a default value. Also one needs to consider if pedestrian outside of the measurement area affect the mean spacing. Overall data preprocessing presents one of the biggest issues when dealing with a knowledge-based model as the results of fitting the parameters are directly tied to the quality of your data.
+
+As for fitting the model we once again encountered the same issue as the authors have only vaguely described how the parameters for the Weidmann model were obtained. As we can see from our previous section on the knowledge-based approach, we have tried different ways to obtain the parameters $v_0, T, l$ for the Weidmann model. The paper merely mentions that it used least-squares fitting to obtain those models. The closest approach to this description was using curve fitting with least-squares from the \verb|scipy.optimize| library. Even here there are different ways how the curve fitting approach can be applied. Additionally the knowledge-based model lacks immediate interpretability, when descriptions are missing. The paper \cite{tordeux2020prediction} describes very poorly what the parameters $T$ and $l$ exactly represent and how they were obtained. From studying other literature \cite{treiber2013traffic} we could find out that $l$ commonly describes the length of a vehicle in the context of traffic flow analysis. Applying to the context of pedestrians $l$ hence describes the length of a pedestrian in their walking direction when looking from above. Another side note, is that we couldn't find were the Weidmann model mentioned in the paper \cite{tordeux2020prediction} was actually derived from. While it cites an older document from Weidmann \cite{weidmann1993transporttechnik}, this paper only mentions a similar model, which puts the pedestrian density into relation with the speed, instead of mean spacing with the speed. It was thus confusing to work with the Weidmann model, as there was barely any literature on it. Oour only directions to a source led to a different model, because the Weidmann model\cite{tordeux2020prediction} is a microscopic model, while the Weidmann model\cite{weidmann1993transporttechnik} is a macroscopic model and also was originally from the Kladek formula \cite{kladek1966geschwindigkeitscharakteristik} and we had no access to this old document from 1966.
+
+
+\paragraph{Challenges of the NN approach} As we have already commented in the challenges for the KB approach, also in the neural network approach the main difficulties are the preprocessing of the data and hyperparameter tuning. The tuning typically demands a exploration and extensive runtime for learning, necessary to obtain accurate estimates of hyperparameter quality. Furthermore, selecting the appropriate features and determining the optimal loss function added more difficulties. We think the paper should provide clearer and more detailed explanations of the experimentation setup so that others can easily reproduce their results.
+\end{task}
