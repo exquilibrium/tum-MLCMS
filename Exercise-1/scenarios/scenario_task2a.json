@@ -1,0 +1,14 @@
+{
+    "iterations": 25,
+    "cell_size": [50, 50],
+    "targets": [
+        [25, 25]
+    ],
+
+    "obstacles": [
+        [20,23],[20,24],[20,25],[20,26],[20,27]
+    ],
+    "pedestrians": [
+        { "position": [5, 25], "speed": 1 }
+    ]
+}

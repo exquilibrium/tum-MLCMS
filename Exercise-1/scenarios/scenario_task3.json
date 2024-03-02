@@ -1,0 +1,15 @@
+{
+    "iterations": 1000,
+    "cell_size": [100, 100],
+    "targets": [
+        [50, 50]
+    ],
+    "pedestrians": [
+        { "position": [80, 50], "speed": 0.5 },
+        { "position": [20, 50], "speed": 0.5 },
+        { "position": [50, 80], "speed": 0.5 },
+        { "position": [50, 20], "speed": 0.5 },
+        { "position": [71, 71], "speed": 0.5 }
+
+    ]
+}
